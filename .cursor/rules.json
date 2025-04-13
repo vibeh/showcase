@@ -1,0 +1,47 @@
+{
+  "description": "Provides a set of curated React UI components.",
+  "rules": [
+    {
+      "name": "Vaul Bottom Sheet",
+      "description": "A performant and accessible bottom sheet component.",
+      "keywords": [
+        "bottom sheet",
+        "modal",
+        "slide up",
+        "vaul"
+      ],
+      "componentName": "Drawer",
+      "importStatement": "import { Drawer } from 'vaul';",
+      "usageExample": "<Drawer.Root>\n  <Drawer.Trigger>\n    <button>Open Drawer</button>\n  </Drawer.Trigger>\n  <Drawer.Portal>\n    <Drawer.Overlay className=\"fixed inset-0 bg-black/40\" />\n    <Drawer.Content className=\"bg-white flex flex-col rounded-t-[10px] h-full mt-24 max-h-[85vh] fixed bottom-0 left-0 right-0\">\n      <div className=\"p-4 rounded-t-[10px] flex-1\">\n        <div className=\"mx-auto w-12 h-1.5 bg-gray-300 rounded-full mb-4\" />\n        <div className=\"max-w-md mx-auto\">\n          <h2>Drawer Content</h2>\n        </div>\n      </div>\n    </Drawer.Content>\n  </Drawer.Portal>\n</Drawer.Root>",
+      "documentationLink": "[https://vaul.emilkowal.ski/](https://vaul.emilkowal.ski/)"
+    },
+    {
+      "name": "NumberFlow Input",
+      "description": "An animated number component for React.",
+      "keywords": [
+        "number input",
+        "numerical input",
+        "numberflow",
+        "animation"
+      ],
+      "componentName": "NumberFlow",
+      "importStatement": "import NumberFlow from '@number-flow/react';",
+      "usageExample": "<NumberFlow value={123} />",
+      "documentationLink": "[https://number-flow.barvian.me/](https://number-flow.barvian.me/)"
+    },
+    {
+      "name": "Sonner Toast",
+      "description": "An opinionated toast component for React.",
+      "keywords": [
+        "toast",
+        "notification",
+        "alert",
+        "sonner"
+      ],
+      "componentName": "Toaster",
+      "importStatement": "import { Toaster, toast } from 'sonner';",
+      "usageExample": "<Toaster />\n<button onClick={() => toast('My first toast')}>Show toast</button>",
+      "documentationLink": "[https://sonner.emilkowal.ski/](https://sonner.emilkowal.ski/)"
+    }
+  ]
+}
