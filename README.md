@@ -1,36 +1,60 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ✨ Vibe Kit Showcase
+
+A showcase project demonstrating a collection of modern React components, built with Next.js and styled with Tailwind CSS.
+
+**Live Demo:** [kit.vibehaus.xyz](https://kit.vibehaus.xyz) (once deployed)
+
+## Components Showcased
+
+This project currently demonstrates the following components:
+
+*   **Vaul:** Smooth, interruptible bottom sheet drawer.
+*   **NumberFlow:** Animated number transitions.
+*   **Sonner:** Elegant and customizable toast notifications.
+*   **⌘K Menu (cmdk):** Fast, accessible command palette.
+*   **Motion (Framer Motion):** Examples of declarative animations.
+*   **Suggest Component:** A placeholder card linking to the project's issue tracker.
+
+## Tech Stack
+
+*   [Next.js](https://nextjs.org/) (React Framework)
+*   [React](https://reactjs.org/)
+*   [Tailwind CSS](https://tailwindcss.com/) (Utility-first CSS)
+*   [Framer Motion](https://www.framer.com/motion/) (Animations)
+*   [cmdk](https://github.com/pacocoursey/cmdk) (Command Menu)
+*   [Vaul](https://vaul.emilkowal.ski/) (Drawer)
+*   [Sonner](https://sonner.emilkowal.ski/) (Toasts)
+*   [TypeScript](https://www.typescriptlang.org/)
 
 ## Getting Started
 
-First, run the development server:
+To run this project locally:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+1.  **Clone the repository:**
+    ```bash
+    git clone git@github.com:vibeh/showcase.git
+    cd showcase
+    ```
+2.  **Install dependencies:**
+    ```bash
+    npm install
+    ```
+3.  **Run the development server:**
+    ```bash
+    npm run dev
+    ```
+4.  Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+**Note:** Ensure the custom fonts (`PPMondwest-Regular.otf`, `SF-Pro-Rounded-Regular.otf`) are placed correctly, likely within the `public/fonts/` directory (create it if it doesn't exist) as referenced in `VibeComponentsShowcase.tsx`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Deployment
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+This project is intended for deployment on [Vercel](https://vercel.com/), targeting the `kit.vibehaus.xyz` subdomain.
 
-## Learn More
+## Contributing
 
-To learn more about Next.js, take a look at the following resources:
+Suggestions for new components or improvements are welcome! Please open an issue on the [GitHub repository](https://github.com/vibeh/showcase/issues).
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## License
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
