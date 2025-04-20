@@ -27,7 +27,7 @@ export const DrawerExample = forwardRef<DrawerExampleRef>((_props, ref) => {
           onClick={(e) => e.stopPropagation()}
         />
         <Drawer.Content
-          className="bg-[#2a2a2a] flex flex-col rounded-t-[20px] h-[55vh] mt-24 fixed bottom-0 left-0 right-0 border-t border-[#444] z-50 text-white"
+          className="bg-[#2a2a2a] flex flex-col rounded-t-[20px] h-[45vh] mt-24 fixed bottom-0 left-0 right-0 border-t border-[#444] z-50 text-white"
           onClick={(e) => e.stopPropagation()}
         >
           {/* Container for placeholder content */}

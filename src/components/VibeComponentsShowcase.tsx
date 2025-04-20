@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { Toaster, toast } from 'sonner';
 import { DrawerExample, DrawerExampleRef } from './DrawerExample';
 import { NumberFlowExample, NumberFlowExampleRef } from './NumberFlowExample';
@@ -8,46 +8,75 @@ import { ToastExample } from './ToastExample';
 import { CmdkPreview } from './CmdkPreview';
 import { MotionPreview, MotionPreviewRef } from './MotionPreview';
 import { SuggestComponentPreview } from './SuggestComponentPreview';
-import { ShineBorder } from "@/components/ui/ShineBorder";
+import { BorderBeam, BorderBeamStyleSheet } from "@/components/ui/BorderBeam";
 
 // Helper Component for Copy Command - Entire area clickable, monochrome
 const CopyCommand = () => {
   const [copied, setCopied] = useState(false);
   const command = 'npx vibe-components add';
+  const copyTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const handleCopy = () => {
+    // Clear any existing timeout
+    if (copyTimeoutRef.current) {
+      clearTimeout(copyTimeoutRef.current);
+    }
+
     navigator.clipboard.writeText(command).then(() => {
       setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+      // Set a new timeout
+      copyTimeoutRef.current = setTimeout(() => {
+        setCopied(false);
+        copyTimeoutRef.current = null; // Clear ref after timeout
+      }, 1500); // Slightly shorter duration for feedback
     });
   };
 
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (copyTimeoutRef.current) {
+        clearTimeout(copyTimeoutRef.current);
+      }
+    };
+  }, []);
+
   return (
     <div className="mb-12 flex justify-center">
-      <ShineBorder
-        className="rounded-lg text-center"
-        shineColor="#FFFFFF"
-        borderWidth={1}
-        duration={8}
+      {/* Outer container: relative, rounded-md, overflow-hidden, ADD onClick */}
+      <div 
+        className="relative max-w-fit rounded-md overflow-hidden cursor-pointer" 
+        onClick={handleCopy}
+        title="Click to copy command"
       >
+        {/* The actual content div: Apply feedback style based on copied state */}
         <div
-          className="max-w-fit bg-[#1a1a1a] rounded-lg p-3 px-4 flex items-center space-x-4 font-mono text-sm cursor-pointer transition-colors hover:bg-[#222] active:bg-[#2a2a2a]"
-          onClick={handleCopy}
-          title="Click to copy command"
+          className={`bg-[#1a1a1a] rounded-md p-3 px-4 flex items-center space-x-4 font-mono text-sm transition-colors duration-150 ease-in-out ${copied ? 'bg-[#2a2a2a]' : 'hover:bg-[#222]'}`}
         >
           <span className="text-[#666]">$</span>
           <span className="flex-1 text-[#e5e5e5] overflow-x-auto whitespace-nowrap no-scrollbar">
             {command}
           </span>
           <span
-            className={`px-3 py-1 rounded-md text-xs font-medium transition-opacity ${
-              copied ? 'opacity-100 text-[#bbb]' : 'opacity-50 text-[#888]'
+            // Change text and color on copy
+            className={`px-3 py-1 rounded-md text-xs font-medium transition-all duration-150 ease-in-out ${
+              copied ? 'opacity-100 text-green-400' : 'opacity-50 text-[#888]'
             }`}
           >
             {copied ? 'Copied!' : 'Copy'}
           </span>
         </div>
-      </ShineBorder>
+        {/* BorderBeam component: Dimmer colors */}
+        <BorderBeam
+            colorFrom="#555" // Dimmer start
+            colorTo="#bbb"   // Dimmer end
+            borderWidth={1}
+            duration={7}   // Slightly faster
+            delay={0}
+            size={150}
+        />
+      </div>
+      <BorderBeamStyleSheet />
       {/* Basic CSS to hide scrollbar visually but keep functionality */}
       <style jsx>{`
         .no-scrollbar::-webkit-scrollbar {
@@ -124,6 +153,7 @@ export function VibeComponentsShowcase() {
   const drawerRef = useRef<DrawerExampleRef>(null);
   const numberFlowRef = useRef<NumberFlowExampleRef>(null);
   const motionRef = useRef<MotionPreviewRef>(null);
+  const [toastCounter, setToastCounter] = useState(0); // Add state for cycling toasts
 
   // Disable eslint rule for this line to allow `any` for mixed ref types
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -147,7 +177,36 @@ export function VibeComponentsShowcase() {
         refsMap.numberflow?.current?.shuffleNumber();
         break;
       case 'toast':
-        toast('Card clicked: Displaying toast!');
+        // Cycle through different toast types
+        const toastType = toastCounter % 4; // Example: cycle through 4 types
+        switch (toastType) {
+          case 0:
+            toast('Event has been created', {
+              description: `Monday, January 1st at 12:00 PM`,
+              action: {
+                label: 'Undo',
+                onClick: () => console.log('Undo!'),
+              },
+            });
+            break;
+          case 1:
+            toast.success('Success!', {
+              description: 'Your changes have been saved.',
+            });
+            break;
+          case 2:
+            toast.error('Error Saving', {
+              description: 'Could not save changes. Please try again.',
+            });
+            break;
+          case 3:
+          default: // Fallback or other types like info/loading
+             toast.info('Reminder', {
+               description: 'Your meeting starts in 15 minutes.',
+             });
+            break;
+        }
+        setToastCounter((count) => count + 1); // Increment for next click
         break;
       case 'cmdk':
         // No action needed, handled by Radix Trigger
@@ -179,9 +238,20 @@ export function VibeComponentsShowcase() {
             const Component = item.component as React.ElementType;
             const componentRef = item.refRequired ? refsMap[item.id] : undefined;
             const isSuggestCard = item.id === 'suggest';
-            const baseCardClasses = `rounded-xl md:rounded-2xl p-4 md:p-6 flex flex-col group cursor-pointer transition-all duration-200 ease-in-out`;
-            const normalCardClasses = `bg-[#1a1a1a] border border-[#333] hover:bg-[#222] hover:scale-[1.02] hover:shadow-[0_8px_30px_rgb(0,0,0,0.25)] active:scale-[0.98] active:bg-[#2a2a2a]`;
-            const suggestCardClasses = `bg-[#0d0d0d] border-2 border-dashed border-[#444] hover:bg-[#1f1f1f] hover:border-solid hover:border-[#666] hover:scale-[1.02] active:scale-[0.98] active:bg-[#2a2a2a]`;
+            const baseCardClasses = `
+              rounded-xl md:rounded-2xl p-4 md:p-6 flex flex-col group cursor-pointer
+              transition-all duration-200 ease-in-out
+            `;
+            const normalCardClasses = `
+              bg-[#1a1a1a] 
+              hover:bg-[#222] hover:scale-[1.02] hover:shadow-[0_8px_30px_rgb(0,0,0,0.25)]
+              active:scale-[0.98] active:bg-[#2a2a2a]
+            `;
+            const suggestCardClasses = `
+              bg-[#0d0d0d] border-2 border-dashed border-[#444]
+              hover:bg-[#111] hover:border-white hover:scale-[1.02]
+              active:scale-[0.98] active:bg-[#2a2a2a]
+            `;
 
             return (
               <div
