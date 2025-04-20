@@ -39,30 +39,17 @@ const SearchIcon = ({ className }: { className?: string }) => (
 );
 // --- End Placeholder Icons ---
 
-// Define Ref type
-export interface CmdkPreviewRef {
-  // No longer need openDialog exposed, trigger is handled by Dialog.Trigger
-}
-
-// Use forwardRef and useImperativeHandle (Ref might not be strictly needed now)
-export const CmdkPreview = React.forwardRef<CmdkPreviewRef>((props, ref) => {
-  // State managed by Dialog.Root, remove useState for open
+// No Ref interface or forwardRef needed
+export const CmdkPreview = () => {
   const [search, setSearch] = React.useState("");
-
-  // Expose ref (potentially empty or for other actions if needed later)
-  React.useImperativeHandle(ref, () => ({}));
 
   // Keyboard listener remains the same for Cmd+K
   React.useEffect(() => {
-    // This needs to toggle the Radix Dialog state now.
-    // We can't directly control Radix state from here easily without prop drilling
-    // or context. A simpler approach is to just trigger a click on the trigger element.
-    // For this, we need a ref on the trigger.
     const triggerRef = document.getElementById('cmdk-trigger-placeholder');
     const down = (e: KeyboardEvent) => {
       if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
         e.preventDefault();
-        triggerRef?.click(); // Simulate click on the placeholder
+        triggerRef?.click();
       }
     };
     document.addEventListener("keydown", down);
@@ -72,11 +59,7 @@ export const CmdkPreview = React.forwardRef<CmdkPreviewRef>((props, ref) => {
   // Placeholder action
   const handleSelect = (itemName: string) => {
     console.log(`Selected: ${itemName}`);
-    // Find a way to close the Radix Dialog after selection if desired
-    // Option 1: Pass setOpen down (complex)
-    // Option 2: Simulate click on trigger again? (Hackish)
-    // Option 3: Use Dialog.Close (Cleanest)
-    // For now, let's just log.
+    // Close handled by Dialog.Close or overlay click
   };
 
   return (
@@ -226,6 +209,6 @@ export const CmdkPreview = React.forwardRef<CmdkPreviewRef>((props, ref) => {
         `}</style>
     </Dialog.Root>
   );
-});
+};
 
 CmdkPreview.displayName = "CmdkPreview"; 

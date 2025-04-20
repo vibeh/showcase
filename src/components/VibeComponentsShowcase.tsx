@@ -1,11 +1,11 @@
 'use client';
 
-import React, { useRef, useState, forwardRef, useImperativeHandle } from 'react';
+import React, { useRef, useState } from 'react';
 import { Toaster, toast } from 'sonner';
 import { DrawerExample, DrawerExampleRef } from './DrawerExample';
 import { NumberFlowExample, NumberFlowExampleRef } from './NumberFlowExample';
 import { ToastExample } from './ToastExample';
-import { CmdkPreview, CmdkPreviewRef } from './CmdkPreview';
+import { CmdkPreview } from './CmdkPreview';
 import { MotionPreview, MotionPreviewRef } from './MotionPreview';
 import { SuggestComponentPreview } from './SuggestComponentPreview';
 import { ShineBorder } from "@/components/ui/ShineBorder";
@@ -13,7 +13,7 @@ import { ShineBorder } from "@/components/ui/ShineBorder";
 // Helper Component for Copy Command - Entire area clickable, monochrome
 const CopyCommand = () => {
   const [copied, setCopied] = useState(false);
-  const command = 'npx vibe-components-cli add';
+  const command = 'npx vibe-components add';
 
   const handleCopy = () => {
     navigator.clipboard.writeText(command).then(() => {
@@ -91,7 +91,7 @@ const componentsConfig = [
     title: '⌘K Menu',
     description: 'Fast command palette',
     component: CmdkPreview,
-    refRequired: true,
+    refRequired: false,
   },
   {
     id: 'motion',
@@ -120,17 +120,15 @@ const componentsConfig = [
 ];
 
 export function VibeComponentsShowcase() {
-  // Refs for interactive components
+  // Define refs only for components that need them
   const drawerRef = useRef<DrawerExampleRef>(null);
   const numberFlowRef = useRef<NumberFlowExampleRef>(null);
-  // Refs for the new components
-  const cmdkRef = useRef<CmdkPreviewRef>(null);
   const motionRef = useRef<MotionPreviewRef>(null);
 
+  // Revert RefsMap type back to any to resolve method access errors
   const refsMap: { [key: string]: React.RefObject<any> | undefined } = {
     drawer: drawerRef,
     numberflow: numberFlowRef,
-    cmdk: cmdkRef,
     motion: motionRef,
   };
 
@@ -142,7 +140,7 @@ export function VibeComponentsShowcase() {
 
     switch (id) {
       case 'drawer':
-        refsMap.drawer?.current?.openDrawer();
+        refsMap.drawer?.current?.openDrawer(); // Optional chaining handles potential null/undefined
         break;
       case 'numberflow':
         refsMap.numberflow?.current?.shuffleNumber();
@@ -151,6 +149,7 @@ export function VibeComponentsShowcase() {
         toast('Card clicked: Displaying toast!');
         break;
       case 'cmdk':
+        // No action needed, handled by Radix Trigger
         break;
       case 'motion':
         refsMap.motion?.current?.triggerAnimation();
@@ -164,7 +163,7 @@ export function VibeComponentsShowcase() {
     <div className="font-sfpro flex-grow w-full text-[#e5e5e5] py-12 md:py-16 px-4 sm:px-6">
       <div className="container mx-auto">
         {/* Use PPMondwest for the main title - Updated Text */}
-        <h1 className="font-mondwest text-5xl md:text-6xl font-normal text-center mb-5 tracking-tight text-white">
+        <h1 className="font-mondwest text-7xl md:text-7xl font-normal text-center mb-5 tracking-tight text-white">
           Vibe Kit
         </h1>
         <p className="text-[#999] text-center mb-12 max-w-xl mx-auto text-lg md:text-xl">
@@ -177,51 +176,30 @@ export function VibeComponentsShowcase() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 auto-rows-[250px]">
           {componentsConfig.map((item) => {
             const Component = item.component as React.ElementType;
-            const componentRef = item.refRequired && item.id in refsMap ? refsMap[item.id] : undefined;
-
-            // Define base classes and conditional classes
+            const componentRef = item.refRequired ? refsMap[item.id] : undefined;
             const isSuggestCard = item.id === 'suggest';
-            const baseCardClasses = `
-              rounded-xl md:rounded-2xl p-4 md:p-6 flex flex-col group cursor-pointer
-              transition-all duration-200 ease-in-out
-            `;
-            const normalCardClasses = `
-              bg-[#1a1a1a] border border-[#333]
-              hover:bg-[#222] hover:scale-[1.02] hover:shadow-[0_8px_30px_rgb(0,0,0,0.25)]
-              active:scale-[0.98] active:bg-[#2a2a2a]
-            `;
-            const suggestCardClasses = `
-              bg-[#0d0d0d] border-2 border-dashed border-[#444]
-              hover:bg-[#1f1f1f] hover:border-solid hover:border-[#666] hover:scale-[1.02]
-              active:scale-[0.98] active:bg-[#2a2a2a]
-            `;
+            const baseCardClasses = `rounded-xl md:rounded-2xl p-4 md:p-6 flex flex-col group cursor-pointer transition-all duration-200 ease-in-out`;
+            const normalCardClasses = `bg-[#1a1a1a] border border-[#333] hover:bg-[#222] hover:scale-[1.02] hover:shadow-[0_8px_30px_rgb(0,0,0,0.25)] active:scale-[0.98] active:bg-[#2a2a2a]`;
+            const suggestCardClasses = `bg-[#0d0d0d] border-2 border-dashed border-[#444] hover:bg-[#1f1f1f] hover:border-solid hover:border-[#666] hover:scale-[1.02] active:scale-[0.98] active:bg-[#2a2a2a]`;
 
             return (
               <div
                 key={item.id}
-                // Combine base classes with conditional ones
                 className={`${baseCardClasses} ${isSuggestCard ? suggestCardClasses : normalCardClasses}`}
                 onClick={() => handleCardClick(item.id, item.href)}
               >
-                {/* Component Preview Area */}
                 <div className="relative flex-1 flex items-center justify-center mb-3 md:mb-4 overflow-hidden rounded-lg min-h-0">
-                  {/* Render the actual component */}
-                  <Component ref={componentRef as React.Ref<unknown>} />
-
-                  {/* --- Re-add Static Drawer Preview --- */}
+                  {/* Pass ref only if it exists */}
+                  <Component ref={componentRef} />
+                  {/* Static drawer preview */}
                   {item.id === 'drawer' && (
                     <div className="absolute bottom-0 left-0 right-0 h-[70%] pointer-events-none">
-                      {/* Static Drawer Content Lookalike */}
                       <div className="bg-[#2a2a2a] flex flex-col rounded-t-[16px] h-full border-t border-[#444] shadow-[0_-5px_15px_rgba(0,0,0,0.1)]">
-                        {/* Handle */}
                         <div className="mt-3 mx-auto w-10 h-1.5 flex-shrink-0 rounded-full bg-[#555]" />
                       </div>
                     </div>
                   )}
                 </div>
-
-                {/* Title and Description */}
-                {/* Conditionally render Title/Desc or adjust styling for suggest card */}
                 <div className={`text-center flex-shrink-0 ${isSuggestCard ? 'opacity-70' : ''}`}>
                   <h2 className="font-semibold text-sm md:text-base text-[#e5e5e5] mb-0.5">
                     {item.title}
