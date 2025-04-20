@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Vibe Components",
-  description: "A showcase of elegant components with Apple-inspired design",
+  description: "Curated components perfect for building modern React apps",
 };
 
 export default function RootLayout({

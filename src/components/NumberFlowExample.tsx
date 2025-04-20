@@ -1,54 +1,46 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useCallback, forwardRef, useImperativeHandle } from 'react';
 import NumberFlow from '@number-flow/react';
 
-export function NumberFlowExample() {
-  const [value, setValue] = useState(0);
+// Define the interface for the functions to expose via ref
+export interface NumberFlowExampleRef {
+  shuffleNumber: () => void;
+}
 
-  const shuffle = () => {
+// Wrap the component with forwardRef
+export const NumberFlowExample = forwardRef<NumberFlowExampleRef>((_props, ref) => {
+  const [value, setValue] = useState(12345); // Start with an initial value
+
+  // Define the shuffle function using useCallback
+  const shuffle = useCallback(() => {
     // Random value between 1 and 99999
     const newValue = Math.floor(Math.random() * 99999) + 1;
     setValue(newValue);
-  };
+  }, []); // No dependencies
+
+  // Expose the shuffleNumber function using useImperativeHandle
+  useImperativeHandle(ref, () => ({
+    shuffleNumber: shuffle,
+  }));
 
   return (
-    <div className="flex flex-col gap-5">
-      <div className="flex items-center justify-center bg-[rgba(0,0,0,0.02)] py-10 rounded-2xl">
-        <div className="text-5xl font-medium text-[#0071e3]">
-          <NumberFlow 
-            value={value} 
-            className="transition-all"
-          />
-        </div>
+    // Simplified container for the number preview
+    // Removed internal buttons and click handlers
+    <div className="flex flex-col items-center justify-center w-full h-full text-center p-4">
+      <div className="text-4xl md:text-5xl font-semibold text-[#e5e5e5] mb-2">
+        <NumberFlow 
+          value={value} 
+          // Optional: add formatting if desired
+          // format=",0" 
+          className="transition-all duration-500 ease-in-out"
+        />
       </div>
       
-      <div className="flex gap-3">
-        <button 
-          className="apple-button-primary flex-1"
-          onClick={shuffle}
-          aria-label="Randomize number"
-        >
-          Shuffle
-        </button>
-      </div>
-      
-      <div className="flex gap-3">
-        <button 
-          className="apple-button-secondary flex-1 text-[#1d1d1f]"
-          onClick={() => setValue(prev => prev + 100)}
-          aria-label="Increase by 100"
-        >
-          +100
-        </button>
-        <button 
-          className="apple-button-secondary flex-1 text-[#1d1d1f]"
-          onClick={() => setValue(prev => Math.max(0, prev - 100))}
-          aria-label="Decrease by 100"
-        >
-          -100
-        </button>
-      </div>
+      {/* REMOVED: All buttons (Shuffle, +100, -100) */}
     </div>
   );
-} 
+});
+
+// Add display name for better debugging
+NumberFlowExample.displayName = "NumberFlowExample"; 
