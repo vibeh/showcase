@@ -125,7 +125,8 @@ export function VibeComponentsShowcase() {
   const numberFlowRef = useRef<NumberFlowExampleRef>(null);
   const motionRef = useRef<MotionPreviewRef>(null);
 
-  // Revert RefsMap type back to any to resolve method access errors
+  // Disable eslint rule for this line to allow `any` for mixed ref types
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const refsMap: { [key: string]: React.RefObject<any> | undefined } = {
     drawer: drawerRef,
     numberflow: numberFlowRef,
